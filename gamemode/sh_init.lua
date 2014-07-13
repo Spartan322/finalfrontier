@@ -205,7 +205,7 @@ end
 
 local ply_mt = FindMetaTable("Player")
 function ply_mt:GetPermission(room)
-    return self._permissions[room:GetPermissionsName()] or permission.NONE
+    return (self._permissions and self._permissions[room:GetPermissionsName()]) or permission.NONE
 end
 
 function ply_mt:HasPermission(room, perm, ignoreSecurityCheck)

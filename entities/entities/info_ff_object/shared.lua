@@ -225,9 +225,14 @@ elseif CLIENT then
         end
     end
 
-    local function appendFlare(tbl, x, y, z, scale, r, g, b, pPeriod, pScale, pPhase)
+    local function appendFlare(tbl, x, y, z, nx, ny, scale, r, g, b, pPeriod, pScale, pPhase)
         local flare = SpaceFlare(Vector(x / 8, y / 8, z / 8), scale, Color(r, g, b))
-        flare:SetPulse(pPeriod, pScale, pPhase)
+
+        flare:SetNormal(nx, ny)
+
+        if pPeriod then
+            flare:SetPulse(pPeriod, pScale, pPhase)
+        end
 
         table.insert(tbl, flare)
     end
@@ -244,9 +249,24 @@ elseif CLIENT then
         elseif self:GetObjectType() == objtype.SHIP then
             local flares = {}
 
-            appendFlare(flares, 0, 1, 0, 0.125, 158, 204, 255, 1, 0.25, 0)
-            appendFlare(flares, -0.25, -1, 0, 0.125, 158, 204, 255, 1, 0.25, 0.5)
-            appendFlare(flares, 0.25, -1, 0, 0.125, 158, 204, 255, 1, 0.25, 0.5)
+            appendFlare(flares, 0, 0, 0, 0, 0, 2, 0, 0, 0)
+
+            for i = 1, 8 do
+                local ang = i / 8 * math.pi * 2
+                local x = math.cos(ang)
+                local y = math.sin(ang)
+
+                appendFlare(flares, x * 0.825, y * 0.825, 0.175, x, y, 0, 255, 32, 16, 1, 0.125, 0)
+            end
+
+            for i = 1, 32 do
+                local ang = i / 32 * math.pi * 2
+                local x = math.cos(ang)
+                local y = math.sin(ang)
+
+                appendFlare(flares, x, y, 0, x, y, 0, 158, 204, 255, 0.25, 0.125, i / 8)
+                appendFlare(flares, x * 0.75, y * 0.75, 0.25, x, y, 0, 158, 204, 255, 0.25, 0.125, 1 - i / 8)
+            end
 
             return flares
         else

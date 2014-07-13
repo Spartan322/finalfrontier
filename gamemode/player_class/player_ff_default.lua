@@ -56,24 +56,16 @@ if SERVER then
 
         self.Player:SetCanWalk(true)
 
-        if self.Player:Team() == 1 then
-            self.Player:SetPlayerColor(Vector(0.26, 0.29, 1))
-        elseif self.Player:Team() == 2 then
-            self.Player:SetPlayerColor(Vector(1, 0.6, 0.18))
-        end
-
         TeleportArriveEffect(self.Player, self.Player:GetPos())
     end
 
     function PLAYER:SetModel()
         self.Player:SetModel(table.Random(_models))
-        self.Player:SetupHands()
     end
 
     function PLAYER:Loadout()
         self.Player:Give("weapon_crowbar")
         self.Player:Give("weapon_ff_repair_tool")
-        self.Player:Give("weapon_ff_phaser")
     end
 end
 

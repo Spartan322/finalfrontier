@@ -48,7 +48,6 @@ end
 
 function SWEP:DispatchEffect(EFFECTSTR)
 	local pPlayer=self.Owner;
-	//if !pPlayer then return end
 	local view;
 	if CLIENT then view=GetViewEntity() else view=pPlayer:GetViewEntity() end
 		if ( !pPlayer:IsNPC() && view:IsPlayer() ) then
@@ -60,7 +59,6 @@ end
 
 function SWEP:ShootEffect(EFFECTSTR,startpos,endpos)
 	local pPlayer=self.Owner;
-	//if !pPlayer then return end
 	local view;
 	if CLIENT then view=GetViewEntity() else view=pPlayer:GetViewEntity() end
 		if ( !pPlayer:IsNPC() && view:IsPlayer() ) then

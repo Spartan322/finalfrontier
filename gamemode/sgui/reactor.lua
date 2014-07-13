@@ -188,10 +188,10 @@ elseif CLIENT then
 
         self.Super[BASE].UpdateLayout(self, layout)
 
-        if layout.room then
+        if layout.room and self._roomelems then
             self._roomelems.supplied.Text = FormatNum(self._curroom:GetSystem():GetPower(), 1, 2) 
                 .. "MW / " .. FormatNum(self._curroom:GetSystem():GetPowerNeeded(), 1, 2) .. "MW"
-        else
+        elseif not layout.room and self._totalbar then
             self._totaltext.Text = FormatNum(self:GetSystem():GetTotalNeeded(), 1, 2) .. "MW / "
                 .. FormatNum(self:GetSystem():GetTotalPower(), 1, 2) .. "MW"
                 

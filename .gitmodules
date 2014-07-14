@@ -7,3 +7,6 @@
 [submodule "content/materials"]
 	path = content/materials
 	url = https://github.com/finalfrontier/materials.git
+[submodule "backgrounds"]
+	path = backgrounds
+	url = https://github.com/finalfrontier/backgrounds.git

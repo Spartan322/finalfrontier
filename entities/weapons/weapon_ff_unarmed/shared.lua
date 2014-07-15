@@ -49,15 +49,15 @@ function SWEP:Initialize()
 end
 
 function SWEP:GetClass()
-   return "weapon_ff_unarmed"
+    return "weapon_ff_unarmed"
 end
 
 function SWEP:OnDrop()
-   self:Remove()
+    self:Remove()
 end
 
 function SWEP:ShouldDropOnDie()
-   return false
+    return false
 end
 
 function SWEP:PrimaryAttack()
@@ -70,15 +70,21 @@ end
 function SWEP:Reload()
 end
 
+function SWEP:OnRemove()
+    if SERVER and IsValid(self.Owner) then
+        self.Owner:DrawViewModel(true)
+    end
+end
+
 function SWEP:Deploy()
-   if SERVER and IsValid(self.Owner) then
-      self.Owner:DrawViewModel(false)
-   end
-   return true
+    if SERVER and IsValid(self.Owner) then
+        self.Owner:DrawViewModel(false)
+    end
+    return true
 end
 
 function SWEP:Holster()
-   return not self.Owner.GetUsingScreen or not self.Owner:GetUsingScreen()
+    return not self.Owner.GetUsingScreen or not self.Owner:GetUsingScreen()
 end
 
 function SWEP:HUDShouldDraw()

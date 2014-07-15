@@ -20,7 +20,7 @@ if CLIENT then
 	SWEP.PrintName     = "Phaser"
 	SWEP.ViewModelFOV  = 56
 	SWEP.ViewModelFlip = false
-	SWEP.Slot          = 1
+	SWEP.Slot          = 0
 	SWEP.SlotPos       = 1
 	SWEP.DrawAmmo      = false
 	SWEP.DrawCrosshair = true
@@ -30,21 +30,20 @@ end
 SWEP.ViewModel = "models/weapons/c_pistol.mdl"
 SWEP.WorldModel = "models/weapons/w_pistol.mdl"
 
-SWEP.Primary.Sound    = Sound("Weapon_AR2.Single")
-SWEP.Primary.Recoil   = 2
-SWEP.Primary.Damage   = 50
-SWEP.Primary.NumShots = 1  
-SWEP.Primary.Delay    = 0.125
-SWEP.Primary.Ammo     = "none"  
-SWEP.Primary.Force    = 2
+SWEP.Primary.Sound     = Sound("Weapon_AR2.Single")
+SWEP.Primary.Recoil    = 8
+SWEP.Primary.MinDamage = 5
+SWEP.Primary.MaxDamage = 25
+SWEP.Primary.NumShots  = 1  
+SWEP.Primary.Delay     = 0.125
+SWEP.Primary.Ammo      = "none"  
+SWEP.Primary.Force     = 2
 
 SWEP.Primary.ChargeDecay  = 0.95
 SWEP.Primary.RechargeRate = 0.25
 SWEP.Primary.ClipSize     = 1
 SWEP.Primary.DefaultClip  = 1
 SWEP.Primary.Automatic    = true
-
-SWEP.ReloadSound = "Weapon_Pistol.Reload"
 
 SWEP._lastShot = 0
 SWEP._lastCharge = 0
@@ -53,100 +52,113 @@ function SWEP:GetCharge()
 	return math.Clamp(self._lastCharge + (CurTime() - self._lastShot) * self.Primary.RechargeRate, 0, 1)
 end
 
+function SWEP:ShouldDropOnDie()
+    return false
+end
+
 function SWEP:Deploy()
 	self._lastShot = CurTime()
 	self._lastCharge = 0
+
+	self.BaseClass.Deploy(self)
 end
 
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 
-	local firstTime = SERVER or CurTime() - self._lastShot >= self.Primary.Delay / 2
+	self:ShootEffects()
+
+	if not SERVER and CurTime() - self._lastShot < self.Primary.Delay / 2 then return end
 
 	local charge = self:GetCharge()
 
-	if firstTime then
-		self._lastShot = CurTime()
-		self._lastCharge = charge * charge * self.Primary.ChargeDecay
+	self._lastShot = CurTime()
+	self._lastCharge = charge * charge * self.Primary.ChargeDecay
 
-		local nextShot = self._lastShot + self.Primary.Delay * (4 - 3 * charge)
+	local nextShot = self._lastShot + self.Primary.Delay * (4 - 3 * charge)
 
-		self.Weapon:SetNextPrimaryFire(nextShot)
-		self.Weapon:SetNextSecondaryFire(nextShot)
+	self.Weapon:SetNextPrimaryFire(nextShot)
+	self.Weapon:SetNextSecondaryFire(nextShot)
+
+	local ang = self.Owner:GetAimVector():Angle()
+	local rot = math.random() * math.pi * 2
+	local far = 65536
+	local rad = math.random() * far * charge / 32
+
+	local trace = {}
+	trace.start = self.Owner:GetShootPos()
+	trace.endpos = self.Owner:GetShootPos()
+		+ self.Owner:GetAimVector() * far
+		+ ang:Up() * (math.cos(rot) * rad)
+		+ ang:Right() * (math.sin(rot) * rad)
+
+	trace.filter = self.Owner
+
+	local tr = util.TraceLine(trace)
+
+	if SERVER then
+		local dmg = DamageInfo()
+		dmg:SetDamage(self.Primary.MinDamage + (self.Primary.MaxDamage - self.Primary.MinDamage) * (1 - charge))
+		dmg:SetAttacker(self:GetOwner())
+		dmg:SetInflictor(self)
+
+		if dmg.SetDamageType then
+			dmg:SetDamagePosition(tr.HitPos)
+			dmg:SetDamageType(DMG_PLASMA)
+		end
+
+		tr.Entity:DispatchTraceAttack(dmg, tr.HitPos, tr.HitPos - tr.HitNormal * 20)
 	end
 
-	self:ShootEffects()
+	local effect = EffectData()
+	effect:SetEntity(self.Owner)
+
+	if CLIENT and self.Owner == LocalPlayer() then
+		local vm = self.Owner:GetViewModel()
+		effect:SetStart(vm:GetAttachment(vm:LookupAttachment("muzzle")).Pos)
+	else
+		effect:SetStart(self.Owner:GetShootPos())
+	end
+
+	effect:SetOrigin(tr.HitPos)
+	effect:SetScale((1 - charge) * 0.75 + 0.25)
+
+	util.Effect("phaser_tracer", effect)
+
+	effect = EffectData()
+	effect:SetOrigin(tr.HitPos + tr.HitNormal)
+	effect:SetNormal(tr.HitNormal)
+
+	util.Effect("AR2Impact", effect)
+
+	self.Weapon:EmitSound("weapons/ar2/fire1.wav", 100, 100 + charge * 60)
 
 	local punchP = math.Rand(-0.4, -0.2) * self.Primary.Recoil * (1 - charge)
 	local punchY = math.Rand(-0.3,  0.2) * self.Primary.Recoil * (1 - charge)
 
 	self.Owner:ViewPunch(Angle(punchP, punchY, 0))
-	
-	local trace = {}
-	trace.start = self.Owner:GetShootPos()
-	trace.endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * 65536
-	trace.filter = self.Owner
-
-	local tr = util.TraceLine(trace)
-	
-	local vAng = (tr.HitPos - self.Owner:GetShootPos()):GetNormal():Angle()
-	
-	if SERVER then
-		local dmginfo = DamageInfo()
-		dmginfo:SetDamage(self.Primary.Damage * charge)
-		dmginfo:SetAttacker(self:GetOwner())
-		dmginfo:SetInflictor(self)
-		
-		if dmginfo.SetDamageType then
-			dmginfo:SetDamagePosition(tr.HitPos)
-			dmginfo:SetDamageType(DMG_PLASMA)
-		end
-		
-		tr.Entity:DispatchTraceAttack(dmginfo, tr.HitPos, tr.HitPos - vAng:Forward() * 20)
-	end
-
-	if firstTime then
-		local hit1, hit2 = tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal
-		
-		local effect = EffectData()
-		effect:SetOrigin(tr.HitPos - vAng:Forward() * 4)
-		effect:SetNormal(tr.HitNormal)
-		effect:SetScale(0 * charge)
-
-		util.Effect("AR2Impact", effect)
-		
-		self.Weapon:EmitSound("weapons/ar2/fire1.wav", 100, 100 + charge * 40)
-	end
 end
 
 function SWEP:SecondaryAttack()
 end
 
-function SWEP:Holster()
-	return true
-end
-
-function SWEP:OnRemove()
-	self:Holster()
-end
-
 if CLIENT then
 	function SWEP:DoDrawCrosshair(x, y)
 		local charge = self:GetCharge()
-		local inner = CreateHollowCircle(x, y, 24, 25, (1 - charge) * math.pi * 0.5, charge * math.pi)
-		local outer = CreateHollowCircle(x, y, 23, 26, (1 - charge) * math.pi * 0.5, charge * math.pi)
+		local inner = CreateHollowCircle(x, y, 16, 17, (1 - charge) * math.pi * 0.5, charge * math.pi)
+		local outer = CreateHollowCircle(x, y, 15, 18, (1 - charge) * math.pi * 0.5, charge * math.pi)
         local clr = team.GetColor(self.Owner:Team())
 
         draw.NoTexture()
 
-		surface.SetDrawColor(Color(clr.r, clr.g, clr.b, 64))
+		surface.SetDrawColor(Color(clr.r, clr.g, clr.b, 32))
 		surface.DrawRect(x - 1, y - 3, 3, 6)
         
         for _, v in ipairs(outer) do
 			surface.DrawPoly(v)
 		end
 
-		surface.SetDrawColor(Color(255, 255, 255, 64))
+		surface.SetDrawColor(Color(255, 255, 255, 32 + Pulse(0.25) * charge * 64))
 		surface.DrawRect(x, y - 2, 1, 4)
 
         for _, v in ipairs(inner) do

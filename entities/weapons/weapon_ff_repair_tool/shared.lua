@@ -58,6 +58,10 @@ function SWEP:Initialize()
     self:SetUsingWelder(false) 
 end
 
+function SWEP:ShouldDropOnDie()
+    return false
+end
+
 function SWEP:SecondaryAttack()
     if SERVER then
         if self:GetRepairMode() == 0 then
@@ -132,7 +136,9 @@ if CLIENT then
     SWEP.manX = nil
     SWEP.manY = nil
     function SWEP:Think()
-        if (CurTime()<self.nextThinkStamp) or LocalPlayer():GetActiveWeapon() ~= self then return end
+        if CurTime() < self.nextThinkStamp
+            or LocalPlayer() ~= self.Owner 
+            or LocalPlayer():GetActiveWeapon() ~= self then return end
         
         local trace = self.Owner:GetEyeTraceNoCursor()
         

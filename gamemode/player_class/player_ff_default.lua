@@ -71,7 +71,6 @@ if SERVER then
     end
 
     function PLAYER:Loadout()
-        self.Player:Give("weapon_crowbar")
         self.Player:Give("weapon_ff_repair_tool")
         self.Player:Give("weapon_ff_phaser")
     end

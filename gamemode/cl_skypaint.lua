@@ -114,7 +114,7 @@ function _mt:Render(origin, loc, mat)
     local scale = self._scale
 
     if self._pulseFreq > 0 then
-        scale = scale + math.Round(Pulse(self._pulseFreq, self._pulsePhase)) * self._pulseScale
+        scale = scale + Pulse(self._pulseFreq, self._pulsePhase) * self._pulseScale
     end
 
     if nx * nx + ny * ny > 0 then

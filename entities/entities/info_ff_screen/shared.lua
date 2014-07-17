@@ -520,7 +520,7 @@ elseif CLIENT then
                 self._lastCursorUpdate = curTime
             end
         else
-            local cx, cy = self:GetCursorPos()
+            local cx, cy = self:GetCursorX(), self:GetCursorY()
             
             if cx ~= self._lastCursorx or cy ~= self._lastCursory then
                 local t = (CurTime() - self._lastCursorUpdate) / CURSOR_UPDATE_FREQ

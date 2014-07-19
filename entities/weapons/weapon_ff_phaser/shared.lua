@@ -31,19 +31,19 @@ SWEP.ViewModel = "models/weapons/c_pistol.mdl"
 SWEP.WorldModel = "models/weapons/w_pistol.mdl"
 
 SWEP.Primary.Sound     = Sound("Weapon_AR2.Single")
-SWEP.Primary.Recoil    = 8
-SWEP.Primary.MinDamage = 5
-SWEP.Primary.MaxDamage = 25
+SWEP.Primary.Recoil    = 32
+SWEP.Primary.MinDamage = 2
+SWEP.Primary.MaxDamage = 20
 SWEP.Primary.NumShots  = 1  
 SWEP.Primary.Delay     = 0.125
 SWEP.Primary.Ammo      = "none"  
 SWEP.Primary.Force     = 2
 
-SWEP.Primary.ChargeDecay  = 0.95
+SWEP.Primary.ChargeDecay  = 0.85
 SWEP.Primary.RechargeRate = 0.25
 SWEP.Primary.ClipSize     = 1
 SWEP.Primary.DefaultClip  = 1
-SWEP.Primary.Automatic    = true
+SWEP.Primary.Automatic    = false
 
 SWEP._lastShot = 0
 SWEP._lastCharge = 0
@@ -75,7 +75,7 @@ function SWEP:PrimaryAttack()
 	self._lastShot = CurTime()
 	self._lastCharge = charge * charge * self.Primary.ChargeDecay
 
-	local nextShot = self._lastShot + self.Primary.Delay * (4 - 3 * charge)
+	local nextShot = self._lastShot + self.Primary.Delay
 
 	self.Weapon:SetNextPrimaryFire(nextShot)
 	self.Weapon:SetNextSecondaryFire(nextShot)
@@ -83,14 +83,17 @@ function SWEP:PrimaryAttack()
 	local ang = self.Owner:GetAimVector():Angle()
 	local rot = math.random() * math.pi * 2
 	local far = 65536
-	local rad = math.random() * far * charge / 32
+	local rad = math.random() * (1.1 - charge) / 16
+
+	local dx = math.cos(rot) * rad
+	local dy = math.sin(rot) * rad
 
 	local trace = {}
 	trace.start = self.Owner:GetShootPos()
 	trace.endpos = self.Owner:GetShootPos()
 		+ self.Owner:GetAimVector() * far
-		+ ang:Up() * (math.cos(rot) * rad)
-		+ ang:Right() * (math.sin(rot) * rad)
+		+ ang:Up() * (dx * far)
+		+ ang:Right() * (dy * far)
 
 	trace.filter = self.Owner
 
@@ -98,7 +101,7 @@ function SWEP:PrimaryAttack()
 
 	if SERVER then
 		local dmg = DamageInfo()
-		dmg:SetDamage(self.Primary.MinDamage + (self.Primary.MaxDamage - self.Primary.MinDamage) * (1 - charge))
+		dmg:SetDamage(self.Primary.MinDamage + (self.Primary.MaxDamage - self.Primary.MinDamage) * charge)
 		dmg:SetAttacker(self:GetOwner())
 		dmg:SetInflictor(self)
 
@@ -117,11 +120,11 @@ function SWEP:PrimaryAttack()
 		local vm = self.Owner:GetViewModel()
 		effect:SetStart(vm:GetAttachment(vm:LookupAttachment("muzzle")).Pos)
 	else
-		effect:SetStart(self.Owner:GetShootPos())
+		effect:SetStart(self.Weapon:GetAttachment(self.Weapon:LookupAttachment("muzzle")).Pos)
 	end
 
 	effect:SetOrigin(tr.HitPos)
-	effect:SetScale((1 - charge) * 0.75 + 0.25)
+	effect:SetScale(charge)
 
 	util.Effect("phaser_tracer", effect)
 
@@ -133,10 +136,7 @@ function SWEP:PrimaryAttack()
 
 	self.Weapon:EmitSound("weapons/ar2/fire1.wav", 100, 100 + charge * 60)
 
-	local punchP = math.Rand(-0.4, -0.2) * self.Primary.Recoil * (1 - charge)
-	local punchY = math.Rand(-0.3,  0.2) * self.Primary.Recoil * (1 - charge)
-
-	self.Owner:ViewPunch(Angle(punchP, punchY, 0))
+	self.Owner:ViewPunch(Angle(dx * self.Primary.Recoil, dy * self.Primary.Recoil, 0))
 end
 
 function SWEP:SecondaryAttack()

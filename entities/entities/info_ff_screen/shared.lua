@@ -569,7 +569,7 @@ elseif CLIENT then
         draw.NoTexture()
         
         cam.Start3D2D(self:GetPos(), ang, 1 / SCREEN_DRAWSCALE)
-        if self._ui then
+        if self._ship and self._room and self._ui then
             self._ui:Draw()
         end
         if self:GetBeingUsed() then

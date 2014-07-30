@@ -49,7 +49,7 @@ if SERVER then
 
     function PLAYER:Spawn()
         local ship = team.GetShip(self.Player:Team())
-        local pad = table.Random(ship:GetSystem("transporter"):GetRoom():GetTransporterPads())
+        local pad = table.Random(ship:GetAvailableTransporterTargets())
 
         self.Player:SetPos(pad)
         self.Player:SetShip(ship)

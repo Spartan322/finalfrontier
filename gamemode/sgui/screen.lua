@@ -20,12 +20,15 @@ local BASE = "container"
 local STATUS_PAGE_INDEX     = 1
 local STATUS_PAGE_NAME      = "statuspage"
 
-page = {}
+local SYSTEM_PAGE_INDEX     = 3
+
 --page.STATUS   = 1
 --page.ACCESS   = 2
---page.SYSTEM   = 3
+--SYSTEM_PAGE_INDEX   = 3
 --page.SECURITY = 4
 --page.OVERRIDE = 5
+
+pageName = {}
 
 GUI.BaseName = BASE
 
@@ -41,10 +44,12 @@ GUI.TabMargin = 8
 GUI._curpage = 0
 GUI._disableStatus = false
 
+function GUI:assignPageAt(pagefilename, index)
+    pageName[#pageName] = { name = pagefilename, index = index }
+end
+
 function GUI:Initialize()
     self.Super[BASE].Initialize(self)
-
-    page[STATUS_PAGE_INDEX] = sgui.Create(self:GetScreen(), STATUS_PAGE_NAME)
 
     self:SetWidth(self:GetScreen():GetWidth())
     self:SetHeight(self:GetScreen():GetHeight())
@@ -58,27 +63,25 @@ function GUI:Initialize()
     self.TabMenu:SetCentre(self:GetWidth() / 2, self.TabHeight / 2 + self.TabMargin)
 
     if not self._disableStatus then
-        self.Pages[STATUS_PAGE_INDEX] = page.STATUS
-        self.Tabs[STATUS_PAGE_INDEX] = self.TabMenu:addTab(page.STATUS.TabName)
+        self.Pages[STATUS_PAGE_INDEX] = sgui.Create(self:GetScreen(), STATUS_PAGE_NAME)
+        self.Tabs[STATUS_PAGE_INDEX] = self.TabMenu:addTab(self.Pages[STATUS_PAGE_INDEX].TabName)
     end
     
-    for i, p in ipairs(page) do
-        self.Pages[i+1] = p
-        self.Tabs[i+1] = self.TabMenu:addTab(p.TabName)
+    for i, pn in ipairs(pageName) do
+        self.Pages[pn.index] = sgui.Create(self:GetScreen(), pm.name)
+        self.Tabs[pn.index] = self.TabMenu:addTab(self.Pages[pn.index].TabName)
     end
     --self.Pages[page.ACCESS] = sgui.Create(self:GetScreen(), "accesspage")
     if self:GetSystem() and self:GetSystem().SGUIName ~= "page" then
-        self.Pages[#self.Pages] = sgui.Create(self:GetScreen(), self:GetSystem().SGUIName)
+        self.Pages[SYSTEM_PAGE_INDEX] = sgui.Create(self:GetScreen(), self:GetSystem().SGUIName)
+        self.Tabs[SYSTEM_PAGE_INDEX] = self.TabMenu:addTab("SYSTEM")
     end
     --self.Pages[page.SECURITY] = sgui.Create(self:GetScreen(), "securitypage")
     --self.Pages[page.OVERRIDE] = sgui.Create(self:GetScreen(), "overridepage")
     
-    self.Tabs[page.ACCESS] = self.TabMenu:AddTab("ACCESS")
-    if self.Pages[page.SYSTEM] then
-        self.Tabs[page.SYSTEM] = self.TabMenu:AddTab("SYSTEM")
-    end
-    self.Tabs[page.SECURITY] = self.TabMenu:AddTab("SECURITY")
-    self.Tabs[page.OVERRIDE] = self.TabMenu:AddTab("OVERRIDE")
+    --self.Tabs[page.ACCESS] = self.TabMenu:AddTab("ACCESS")
+    --self.Tabs[page.SECURITY] = self.TabMenu:AddTab("SECURITY")
+    --self.Tabs[page.OVERRIDE] = self.TabMenu:AddTab("OVERRIDE")
 
     if SERVER then
         local old = self.TabMenu.OnChangeCurrent
@@ -93,10 +96,13 @@ function GUI:Initialize()
 end
 
 function GUI:UpdatePermissions()
-    if self.Pages[page.SYSTEM] then
-        self.Tabs[page.SYSTEM].CanClick = self.Permission >= permission.SYSTEM
+    --if self.Pages[SYSTEM_PAGE_INDEX] then
+    --    self.Tabs[SYSTEM_PAGE_INDEX].CanClick = self.Permission >= permission.SYSTEM
+    --end
+    --self.Tabs[page.SECURITY].CanClick = self.Permission >= permission.SECURITY
+    for i, p in ipairs(self.Pages) do
+        self.Tabs[p.PageIndex].CanClick = self.Permission >= p:GetRequiredPermission()
     end
-    self.Tabs[page.SECURITY].CanClick = self.Permission >= permission.SECURITY
 end
 
 function GUI:GetCurrentPageIndex()
@@ -111,7 +117,7 @@ function GUI:SetCurrentPageIndex(newpage)
         curpage:Leave()
         self:RemoveChild(curpage)
 
-        if curpage ~= self.Pages[page.STATUS] then
+        if curpage ~= self.Pages[STATUS_PAGE_INDEX] then
             self.TabMenu:Remove()
         end
     end
@@ -120,7 +126,7 @@ function GUI:SetCurrentPageIndex(newpage)
 
     curpage = self:GetCurrentPage()
     if curpage then
-        if curpage ~= self.Pages[page.STATUS] then
+        if curpage ~= self.Pages[STATUS_PAGE_INDEX] then
             if not self.TabMenu:HasParent() then
                 self:AddChild(self.TabMenu)
             end

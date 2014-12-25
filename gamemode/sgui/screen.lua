@@ -44,8 +44,12 @@ GUI.TabMargin = 8
 GUI._curpage = 0
 GUI._disableStatus = false
 
-function GUI:assignPageAt(pagefilename, index)
-    pageName[#pageName] = { name = pagefilename, index = index }
+function GUI:assignPageAt(pagename, index)
+    pageName[#pageName] = { name = pagename, index = index }
+end
+
+function GUI:addPage(pagename)
+    self:assignPageAt(pagename, #pageName)
 end
 
 function GUI:Initialize()
@@ -68,8 +72,8 @@ function GUI:Initialize()
     end
     
     for i, pn in ipairs(pageName) do
-        self.Pages[pn.index] = sgui.Create(self:GetScreen(), pm.name)
-        self.Tabs[pn.index] = self.TabMenu:addTab(self.Pages[pn.index].TabName)
+        self.Pages[pn.index+i] = sgui.Create(self:GetScreen(), pm.name)
+        self.Tabs[pn.index+i] = self.TabMenu:addTab(self.Pages[pn.index].TabName)
     end
     --self.Pages[page.ACCESS] = sgui.Create(self:GetScreen(), "accesspage")
     if self:GetSystem() and self:GetSystem().SGUIName ~= "page" then

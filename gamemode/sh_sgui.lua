@@ -159,6 +159,10 @@ function sgui.Create(parent, name)
     return nil
 end
 
-function sgui.addPage(pagename, index)
+function sgui.assignPage(pagename, index)
     sgui.pageLoader[#sgui.pageLoader] = { name = pagename, index = index }
+end
+
+function sgui.addPage(pagename)
+    sgui.assignPage(pagename, #sgui.pageLoad+1)    
 end

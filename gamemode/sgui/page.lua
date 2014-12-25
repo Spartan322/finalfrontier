@@ -24,6 +24,8 @@ function GUI:Initialize()
 
     self:SetWidth(self:GetScreen():GetWidth())
     self:SetHeight(self:GetScreen():GetHeight())
+    
+    sgui.addPage(self.Name)
 end
 
 function GUI:Enter()

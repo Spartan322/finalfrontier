@@ -31,6 +31,7 @@ MOUSE2 = 2
 if not sgui then
     sgui = {}
     sgui._dict = {}
+    sgui.pageLoader = {}
 else return end
 
 function sgui.IsDebug()
@@ -156,4 +157,8 @@ function sgui.Create(parent, name)
         return element
     end
     return nil
+end
+
+function sgui.addPage(pagename, index)
+    sgui.pageLoader[#sgui.pageLoader] = { name = pagename, index = index }
 end

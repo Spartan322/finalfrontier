@@ -28,8 +28,6 @@ local SYSTEM_PAGE_INDEX     = 3
 --page.SECURITY = 4
 --page.OVERRIDE = 5
 
-pageName = {}
-
 GUI.BaseName = BASE
 
 GUI.Permission = 0
@@ -43,14 +41,6 @@ GUI.TabMargin = 8
 
 GUI._curpage = 0
 GUI._disableStatus = false
-
-function GUI:assignPageAt(pagename, index)
-    pageName[#pageName] = { name = pagename, index = index }
-end
-
-function GUI:addPage(pagename)
-    self:assignPageAt(pagename, #pageName)
-end
 
 function GUI:Initialize()
     self.Super[BASE].Initialize(self)
@@ -71,8 +61,8 @@ function GUI:Initialize()
         self.Tabs[STATUS_PAGE_INDEX] = self.TabMenu:addTab(self.Pages[STATUS_PAGE_INDEX].TabName)
     end
     
-    for i, pn in ipairs(pageName) do
-        self.Pages[pn.index+i] = sgui.Create(self:GetScreen(), pm.name)
+    for i, pn in ipairs(sgui.pageLoader) do
+        self.Pages[pn.index+i] = sgui.Create(self:GetScreen(), pn.name)
         self.Tabs[pn.index+i] = self.TabMenu:addTab(self.Pages[pn.index].TabName)
     end
     --self.Pages[page.ACCESS] = sgui.Create(self:GetScreen(), "accesspage")
@@ -97,6 +87,10 @@ function GUI:Initialize()
 
     self:UpdatePermissions()
     self:SetCurrentPageIndex(pageNumber.STATUS)
+end
+
+function GUI:ToggleStatusPage()
+   self._disableStatus ~= self._disableStatus
 end
 
 function GUI:UpdatePermissions()

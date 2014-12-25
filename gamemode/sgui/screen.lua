@@ -17,12 +17,15 @@
 
 local BASE = "container"
 
+local STATUS_PAGE_INDEX     = 1
+local STATUS_PAGE_NAME      = "statuspage"
+
 page = {}
-page.STATUS   = 1
-page.ACCESS   = 2
-page.SYSTEM   = 3
-page.SECURITY = 4
-page.OVERRIDE = 5
+--page.STATUS   = 1
+--page.ACCESS   = 2
+--page.SYSTEM   = 3
+--page.SECURITY = 4
+--page.OVERRIDE = 5
 
 GUI.BaseName = BASE
 
@@ -36,28 +39,40 @@ GUI.TabHeight = 48
 GUI.TabMargin = 8
 
 GUI._curpage = 0
+GUI._disableStatus = false
 
 function GUI:Initialize()
     self.Super[BASE].Initialize(self)
+
+    page[STATUS_PAGE_INDEX] = sgui.Create(self:GetScreen(), STATUS_PAGE_NAME)
 
     self:SetWidth(self:GetScreen():GetWidth())
     self:SetHeight(self:GetScreen():GetHeight())
     self:SetCentre(0, 0)
 
     self.Pages = {}
-    self.Pages[page.STATUS] = sgui.Create(self:GetScreen(), "statuspage")
-    self.Pages[page.ACCESS] = sgui.Create(self:GetScreen(), "accesspage")
-    if self:GetSystem() and self:GetSystem().SGUIName ~= "page" then
-        self.Pages[page.SYSTEM] = sgui.Create(self:GetScreen(), self:GetSystem().SGUIName)
-    end
-    self.Pages[page.SECURITY] = sgui.Create(self:GetScreen(), "securitypage")
-    self.Pages[page.OVERRIDE] = sgui.Create(self:GetScreen(), "overridepage")
-
+    self.Tabs = {}
+    
     self.TabMenu = sgui.Create(self:GetScreen(), "tabmenu")
     self.TabMenu:SetSize(self:GetWidth() - self.TabMargin * 2, self.TabHeight)
     self.TabMenu:SetCentre(self:GetWidth() / 2, self.TabHeight / 2 + self.TabMargin)
 
-    self.Tabs = {}
+    if not self._disableStatus then
+        self.Pages[STATUS_PAGE_INDEX] = page.STATUS
+        self.Tabs[STATUS_PAGE_INDEX] = self.TabMenu:addTab(page.STATUS.TabName)
+    end
+    
+    for i, p in ipairs(page) do
+        self.Pages[i+1] = p
+        self.Tabs[i+1] = self.TabMenu:addTab(p.TabName)
+    end
+    --self.Pages[page.ACCESS] = sgui.Create(self:GetScreen(), "accesspage")
+    if self:GetSystem() and self:GetSystem().SGUIName ~= "page" then
+        self.Pages[#self.Pages] = sgui.Create(self:GetScreen(), self:GetSystem().SGUIName)
+    end
+    --self.Pages[page.SECURITY] = sgui.Create(self:GetScreen(), "securitypage")
+    --self.Pages[page.OVERRIDE] = sgui.Create(self:GetScreen(), "overridepage")
+    
     self.Tabs[page.ACCESS] = self.TabMenu:AddTab("ACCESS")
     if self.Pages[page.SYSTEM] then
         self.Tabs[page.SYSTEM] = self.TabMenu:AddTab("SYSTEM")
@@ -74,7 +89,7 @@ function GUI:Initialize()
     end
 
     self:UpdatePermissions()
-    self:SetCurrentPageIndex(page.STATUS)
+    self:SetCurrentPageIndex(pageNumber.STATUS)
 end
 
 function GUI:UpdatePermissions()

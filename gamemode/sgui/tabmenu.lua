@@ -24,11 +24,18 @@ GUI.Color = Color(191, 191, 191, 255)
 
 GUI._tabs = nil
 GUI._current = 0
+GUI._pages = nil
+GUI._pageNumber = 0
+GUI._pageLimit = 4
+
+GUI._leftButton = nil
+GUI._rightButton = nil
 
 function GUI:Initialize()
     self.Super[BASE].Initialize(self)
 
     self._tabs = {}
+    self._pages = {}
 end
 
 function GUI:AddTab(text)
@@ -43,6 +50,10 @@ function GUI:AddTab(text)
     end
 
     return tab
+end
+
+function GUI:SetTabsPerPage(number)
+    self._pageLimit = number
 end
 
 function GUI:SetBounds(bounds)
@@ -69,6 +80,10 @@ function GUI:SetCurrentIndex(index)
         self._current = index
         self:OnChangeCurrent(index)
     end
+end
+
+function GUI:SetCurrentPage(pageIndex)
+   self._pageNumber = pageIndex 
 end
 
 function GUI:SetCurrent(tab)
@@ -99,9 +114,26 @@ end
 
 function GUI:UpdateTabPositions()
     local margin = 8
-    local width = (self:GetWidth() - margin) / self:GetTabCount()
+    local width = (self:GetWidth() - margin) / self._pageLimit
 
     local left = margin
+    
+    if #self._tabs > self._pageLimit then
+        self._pages = {}
+        for i=0, (#self._tabs/self._pageLimit) do
+            self._pages[i] = {}
+        end
+        for i, tab in ipairs(self._tabs) do
+            self._pages[i/self._pageLimit][i%self._pageLimit] = tab
+        end
+        self._tabs = self._pages[self._pageNumber]
+        
+        self._leftButton = sgui.Create(self, "button")
+        self._leftButton:SetHeight(self:GetHeight() - margin * 2)
+        self._leftButton:SetWidth(self._leftButton:GetHeight())
+        self._leftButton:SetOrigin(0)
+        self._leftButton.Text = "<"
+    end
 
     for i, tab in ipairs(self._tabs) do
         tab:SetHeight(self:GetHeight() - margin * 2)
@@ -109,6 +141,7 @@ function GUI:UpdateTabPositions()
         tab:SetOrigin(left, margin)
         left = left + width
     end
+    
 end
 
 if SERVER then

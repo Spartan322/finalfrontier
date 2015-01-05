@@ -84,6 +84,7 @@ end
 
 function GUI:SetCurrentPage(pageIndex)
    self._pageNumber = pageIndex 
+   self:UpdateTabPositions();
 end
 
 function GUI:SetCurrent(tab)
@@ -131,8 +132,26 @@ function GUI:UpdateTabPositions()
         self._leftButton = sgui.Create(self, "button")
         self._leftButton:SetHeight(self:GetHeight() - margin * 2)
         self._leftButton:SetWidth(self._leftButton:GetHeight())
-        self._leftButton:SetOrigin(0)
+        self._leftButton:SetOrigin(0,0)
         self._leftButton.Text = "<"
+        self._leftButton.CanClick = self._pageNumber > 1
+        
+        self._rightButton = sgui.Create(self, "button")
+        self._rightButton:SetHeight(self:GetHeight() - margin * 2)
+        self._rightButton:SetWidth(self._rightButton:GetHeight())
+        self._rightButton:SetOrigin(self:GetWidth() - self._rightButton:GetWidth(), 0)
+        self._rightButton.Text = ">"
+        self._rightButton.CanClick = self._pageNumber < #self._pages
+        
+        if SERVER then
+        self._leftButton.OnClick = function(btn)
+            self:SetCurrentPage(self._pageNumber-1)
+        end
+        
+        self._rightButton.OnClick = function(btn)
+            self:SetCurrentPage(self._pageNumber+1)
+        end
+        end
     end
 
     for i, tab in ipairs(self._tabs) do

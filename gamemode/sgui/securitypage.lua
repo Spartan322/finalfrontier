@@ -15,9 +15,12 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "defaultpage"
 
 GUI.BaseName = BASE
+
+GUI.TabName = "SECURITY"
+GUI.TabIndex = 3
 
 GUI.PermNoneColor = Color(127, 127, 127, 255)
 GUI.PermAccessColor = Color(45, 51, 172, 255)

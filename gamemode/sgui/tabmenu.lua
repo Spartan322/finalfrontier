@@ -25,7 +25,8 @@ GUI.Color = Color(191, 191, 191, 255)
 GUI._tabs = nil
 GUI._current = 0
 GUI._pages = nil
-GUI._pageNumber = 0
+GUI._loader = nil
+GUI._pageIndex = 0
 GUI._pageLimit = 4
 
 GUI._leftButton = nil
@@ -65,8 +66,16 @@ function GUI:GetCurrentIndex()
     return self._current
 end
 
+function Gui:GetTrueCurrentIndex()
+	return self:GetCurrentIndex() + (self._pageLimit*self._pageIndex)
+end
+
 function GUI:GetCurrent()
-    return self._tabs[self._current]
+    return self._pages[self._pageIndex][self._current]
+end
+
+function GUI:GetCurrentPage()
+	return self._pages[self._pageIndex]
 end
 
 function GUI:OnChangeCurrent() end
@@ -113,46 +122,60 @@ function GUI:GetTabCount()
     return #self._tabs
 end
 
+function GUI:GetTotalTabCount()
+	return (#self._pages*self._pageLimit - self._pageLimit) + #self._pages[#self.pages]
+end
+
 function GUI:UpdateTabPositions()
     local margin = 8
     local width = (self:GetWidth() - margin) / self._pageLimit
 
     local left = margin
-    
-    if #self._tabs > self._pageLimit then
-        self._pages = {}
-        for i=0, (#self._tabs/self._pageLimit) do
-            self._pages[i] = {}
-        end
-        for i, tab in ipairs(self._tabs) do
-            self._pages[i/self._pageLimit][i%self._pageLimit] = tab
-        end
-        self._tabs = self._pages[self._pageNumber]
-        
-        self._leftButton = sgui.Create(self, "button")
-        self._leftButton:SetHeight(self:GetHeight() - margin * 2)
-        self._leftButton:SetWidth(self._leftButton:GetHeight())
-        self._leftButton:SetOrigin(0,0)
-        self._leftButton.Text = "<"
-        self._leftButton.CanClick = self._pageNumber > 1
-        
-        self._rightButton = sgui.Create(self, "button")
-        self._rightButton:SetHeight(self:GetHeight() - margin * 2)
-        self._rightButton:SetWidth(self._rightButton:GetHeight())
-        self._rightButton:SetOrigin(self:GetWidth() - self._rightButton:GetWidth(), 0)
-        self._rightButton.Text = ">"
-        self._rightButton.CanClick = self._pageNumber < #self._pages
-        
-        if SERVER then
-        self._leftButton.OnClick = function(btn)
-            self:SetCurrentPage(self._pageNumber-1)
-        end
-        
-        self._rightButton.OnClick = function(btn)
-            self:SetCurrentPage(self._pageNumber+1)
-        end
-        end
-    end
+	
+	local pageIsLoaded = false
+	self._loader = self._pages
+	self._pages = {}
+	
+	if self._loader ~= nil then
+		self._pages = self._loader
+		pageIsLoaded = true
+	end
+	
+	if not pageIsLoaded then
+		for i, tab in ipairs(self._tabs) do
+			self._pages[i/self._pageLimit][i%self._pageLimit] = tab
+		end
+	elseif #self._tabs > self._pageLimit then
+		for i, tab in ipairs(self._tabs) do
+			self._pages[(i+#self._pages)/self._pageLimit][(i+#self._pages)%self._pageLimit] = tab
+		end
+	end
+	
+	self._tabs = self._pages[self._pageNumber]
+	
+	self._leftButton = sgui.Create(self, "button")
+	self._leftButton:SetHeight(self:GetHeight() - margin * 2)
+	self._leftButton:SetWidth(self._leftButton:GetHeight())
+	self._leftButton:SetOrigin(0,0)
+	self._leftButton.Text = "<"
+	self._leftButton.CanClick = self._pageNumber > 1
+	
+	self._rightButton = sgui.Create(self, "button")
+	self._rightButton:SetHeight(self:GetHeight() - margin * 2)
+	self._rightButton:SetWidth(self._rightButton:GetHeight())
+	self._rightButton:SetOrigin(self:GetWidth() - self._rightButton:GetWidth(), 0)
+	self._rightButton.Text = ">"
+	self._rightButton.CanClick = self._pageNumber < #self._pages
+	
+	if SERVER then
+		self._leftButton.OnClick = function(btn)
+			self:SetCurrentPage(self._pageNumber-1)
+		end
+		
+		self._rightButton.OnClick = function(btn)
+			self:SetCurrentPage(self._pageNumber+1)
+		end
+	end
 
     for i, tab in ipairs(self._tabs) do
         tab:SetHeight(self:GetHeight() - margin * 2)

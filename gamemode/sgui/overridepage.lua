@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "defaultpage"
 
 local NODE_SIZE = 48
 
@@ -27,6 +27,9 @@ local NODE_LABELS = {
 }
 
 GUI.BaseName = BASE
+
+GUI.TabName = "OVERRIDE"
+GUI.TabIndex = 4
 
 GUI._shuffleButton = nil
 GUI._overrideButton = nil
@@ -361,4 +364,8 @@ if CLIENT then
 
         self.Super[BASE].UpdateLayout(self, layout)
     end    
+end
+
+function GUI:GetRequiredPermisson()
+	return permission.OVERRIDE
 end

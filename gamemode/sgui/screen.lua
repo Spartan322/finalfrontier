@@ -17,10 +17,10 @@
 
 local BASE = "container"
 
-local STATUS_PAGE_INDEX     = 1
+local STATUS_PAGE_INDEX     = 0
 local STATUS_PAGE_NAME      = "statuspage"
 
-local SYSTEM_PAGE_INDEX     = 3
+local SYSTEM_PAGE_INDEX     = 2
 
 --page.STATUS   = 1
 --page.ACCESS   = 2
@@ -58,7 +58,6 @@ function GUI:Initialize()
 
     if not self._disableStatus then
         self.Pages[STATUS_PAGE_INDEX] = sgui.Create(self:GetScreen(), STATUS_PAGE_NAME)
-        self.Tabs[STATUS_PAGE_INDEX] = self.TabMenu:addTab(self.Pages[STATUS_PAGE_INDEX].TabName)
     end
     
     for i, pn in ipairs(sgui.pageLoader) do
@@ -81,12 +80,12 @@ function GUI:Initialize()
         local old = self.TabMenu.OnChangeCurrent
         self.TabMenu.OnChangeCurrent = function(tabmenu)
             old(tabmenu)
-            self:SetCurrentPageIndex(page[tabmenu:GetCurrent().Text])
+            self:SetCurrentPageIndex(self.Pages[tabmenu:GetTrueCurrentIndex()])
         end
     end
 
     self:UpdatePermissions()
-    self:SetCurrentPageIndex(pageNumber.STATUS)
+    self:SetCurrentPageIndex(STATUS_PAGE_INDEX)
 end
 
 function GUI:ToggleStatusPage()
@@ -99,7 +98,10 @@ function GUI:UpdatePermissions()
     --end
     --self.Tabs[page.SECURITY].CanClick = self.Permission >= permission.SECURITY
     for i, p in ipairs(self.Pages) do
-        self.Tabs[p.PageIndex].CanClick = self.Permission >= p:GetRequiredPermission()
+        self.Tabs[i].CanClick = (self.Permission >= p:GetRequiredPermission())
+		if i = SYSTEM_PAGE_INDEX then
+			self.Tabs[i].CanClick = self.Permission >= permission.SYSTEM
+		end
     end
 end
 
@@ -115,7 +117,7 @@ function GUI:SetCurrentPageIndex(newpage)
         curpage:Leave()
         self:RemoveChild(curpage)
 
-        if curpage ~= self.Pages[STATUS_PAGE_INDEX] then
+        if curpage ~= self._statusPage then
             self.TabMenu:Remove()
         end
     end

@@ -1,6 +1,8 @@
 # Final Frontier - Space Adventures in Space
 A Garry's Mod gamemode by Metapyziks
 
+This specific repo is maintained by Spartan322
+
 ## Installation
 
 ### Developers
@@ -18,3 +20,7 @@ A Garry's Mod gamemode by Metapyziks
 ### Workshop
 
 Alternatively, subscribe to the official addon in the [Steam Workshop](http://steamcommunity.com/sharedfiles/filedetails/?id=282752490)
+
+### Gamemode Notice
+Noticing how Metapyziks is busy, this is an attempt to advance the project until further noted.
+

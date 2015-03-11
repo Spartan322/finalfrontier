@@ -471,7 +471,7 @@ elseif CLIENT then
             self._room = nil
         end
 
-        if not self._ship and self:GetShipName() and string.len(self:GetShipName()) > 0 then
+        if not self._ship and self:GetShipName() and string.len(self:GetShipName()) > 0 and ships then
             self._ship = ships.GetByName(self:GetShipName())
         end
 

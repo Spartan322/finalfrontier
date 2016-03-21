@@ -256,6 +256,33 @@ if SERVER then
         ed:SetOrigin(pos)
         util.Effect("trans_spawn", ed, true, true)
     end
+    
+    function SYS:SpaceEntity(ent, pad)
+        if ent:IsPlayer() then
+            return false
+        else
+            timer.Simple(1 / 30, function()
+                if not IsValid(ent) then return end
+                if ent:GetClass() == "prop_ff_module" or ent:GetClass() == "prop_ff_weaponmodule" then
+                    local obj = ents.Create("info_ff_object")
+                    obj:SetCoordinates(self:GetShip():GetCoordinates())
+                    obj:AssignModule(ent)
+                    obj:Spawn()
+
+                    local vx, vy = self:GetShip():GetVel()
+                    local dir = (math.random() * 2 - 1) * math.pi
+
+                    if vx * vx + vy * vy >= 1 / (64 * 64) then
+                        dir = dir / 8 + math.atan2(-vy, -vx)
+                    end
+
+                    obj:SetVel(vx + math.cos(dir) / 64, vy + math.sin(dir) / 64)
+                else
+                    ent:Remove()
+                end
+            end)
+        end
+    end
 
     function SYS:TeleportEntity(ent, pad, dest)
         if not self:CanTeleportEntity(ent) then return false end
@@ -281,30 +308,7 @@ if SERVER then
                 if phys and IsValid(phys) then phys:Wake() end
             end
         else
-            if ent:IsPlayer() then
-                return false
-            else
-                timer.Simple(1 / 30, function()
-                    if not IsValid(ent) then return end
-                    if ent:GetClass() == "prop_ff_module" or ent:GetClass() == "prop_ff_weaponmodule" then
-                        local obj = ents.Create("info_ff_object")
-                        obj:SetCoordinates(self:GetShip():GetCoordinates())
-                        obj:AssignModule(ent)
-                        obj:Spawn()
-
-                        local vx, vy = self:GetShip():GetVel()
-                        local dir = (math.random() * 2 - 1) * math.pi
-
-                        if vx * vx + vy * vy >= 1 / (64 * 64) then
-                            dir = dir / 8 + math.atan2(-vy, -vx)
-                        end
-
-                        obj:SetVel(vx + math.cos(dir) / 64, vy + math.sin(dir) / 64)
-                    else
-                        ent:Remove()
-                    end
-                end)
-            end
+            return false
         end
 
         return true

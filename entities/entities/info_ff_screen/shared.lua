@@ -466,12 +466,12 @@ elseif CLIENT then
     end
 
     function ENT:Think()
-        if self._ship and not self._ship:IsValid() then
+        if self._ship and ships and not self._ship:IsValid() then
             self._ship = nil
             self._room = nil
         end
 
-        if not self._ship and self:GetShipName() and string.len(self:GetShipName()) > 0 and ships then
+        if not self._ship and self:GetShipName() and string.len(self:GetShipName()) > 0 then
             self._ship = ships.GetByName(self:GetShipName())
         end
 

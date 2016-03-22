@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "page_page"
 
 GUI.BaseName = BASE
 
@@ -26,12 +26,12 @@ GUI.RightIcon = nil
 function GUI:Enter()
     self.Super[BASE].Enter(self)
 
-    self.StatusDial = sgui.Create(self, "statusdial")
+    self.StatusDial = sgui.Create(self, "gui_statusdial")
     self.StatusDial:SetCentre(self:GetWidth() / 2, self:GetHeight() / 2)
 
     if self:GetSystem() then
-        self.LeftIcon = sgui.Create(self, "image")
-        self.RightIcon = sgui.Create(self, "image")
+        self.LeftIcon = sgui.Create(self, "gui_image")
+        self.RightIcon = sgui.Create(self, "gui_image")
 
         local size = self:GetWidth() / 6
         local x, y = self:GetCentre()

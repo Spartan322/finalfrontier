@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "page_page"
 
 GUI.BaseName = BASE
 
@@ -30,7 +30,7 @@ GUI._powerBar = nil
 function GUI:Enter()
     self.Super[BASE].Enter(self)
 
-    self._grid = sgui.Create(self, "sectorgrid")
+    self._grid = sgui.Create(self, "gui_sectorgrid")
     self._grid:SetOrigin(8, 8)
     self._grid:SetSize(self:GetWidth() * 0.6 - 16, self:GetHeight() - 16)
     self._grid:SetCentreObject(nil)
@@ -54,14 +54,14 @@ function GUI:Enter()
     local colLeft = self._grid:GetRight() + 16
     local colWidth = self:GetWidth() * 0.4 - 16
 
-    self._zoomLabel = sgui.Create(self, "label")
+    self._zoomLabel = sgui.Create(self, "gui_label")
     self._zoomLabel.AlignX = TEXT_ALIGN_CENTER
     self._zoomLabel.AlignY = TEXT_ALIGN_CENTER
     self._zoomLabel:SetOrigin(colLeft, 16)
     self._zoomLabel:SetSize(colWidth, 32)
     self._zoomLabel.Text = "View Zoom"
 
-    self._zoomSlider = sgui.Create(self, "slider")
+    self._zoomSlider = sgui.Create(self, "gui_slider")
     self._zoomSlider:SetOrigin(colLeft, self._zoomLabel:GetBottom() + 8)
     self._zoomSlider:SetSize(colWidth, 48)
 
@@ -73,25 +73,25 @@ function GUI:Enter()
         end
     end
 
-    self._sectorLabel = sgui.Create(self, "label")
+    self._sectorLabel = sgui.Create(self, "gui_label")
     self._sectorLabel.AlignX = TEXT_ALIGN_CENTER
     self._sectorLabel.AlignY = TEXT_ALIGN_CENTER
     self._sectorLabel:SetOrigin(colLeft, self._zoomSlider:GetBottom() + 32)
     self._sectorLabel:SetSize(colWidth, 32)
 
-    self._coordLabel = sgui.Create(self, "label")
+    self._coordLabel = sgui.Create(self, "gui_label")
     self._coordLabel.AlignX = TEXT_ALIGN_CENTER
     self._coordLabel.AlignY = TEXT_ALIGN_CENTER
     self._coordLabel:SetOrigin(colLeft, self._sectorLabel:GetBottom() + 16)
     self._coordLabel:SetSize(colWidth, 32)
 
-    self._angleLabel = sgui.Create(self, "label")
+    self._angleLabel = sgui.Create(self, "gui_label")
     self._angleLabel.AlignX = TEXT_ALIGN_CENTER
     self._angleLabel.AlignY = TEXT_ALIGN_CENTER
     self._angleLabel:SetOrigin(colLeft, self._coordLabel:GetBottom() + 16)
     self._angleLabel:SetSize(colWidth, 32)
 
-    self._powerBar = sgui.Create(self, "powerbar")
+    self._powerBar = sgui.Create(self, "gui_powerbar")
     self._powerBar:SetOrigin(colLeft, self:GetHeight() - 64)
     self._powerBar:SetSize(colWidth, 48)
 end

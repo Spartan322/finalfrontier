@@ -151,11 +151,18 @@ if SERVER then
         
         local pads = self:GetRoom():GetTransporterPads()
 
-        if not IsValid(roomOrObj) or roomOrObj:GetClass() == "info_ff_room" then
+        if not IsValid(roomOrObj) then
+            for i, pad in ipairs(pads) do
+                for _, ent in pairs(ents.FindInSphere(pad, 32)) do
+                    if self:CanTeleportEntity(ent) and not self:SpaceEntity(ent) then self:TeleportFailEffect(pad) end
+                end
+            end
+
+        elseif roomOrObj:GetClass() == "info_ff_room" then
             local room = roomOrObj
             local sent = {}
 
-            if not IsValid(room) or room:GetShip() == self:GetShip() or room:GetShields() < self:GetShieldThreshold() then
+            if room:GetShip() == self:GetShip() or room:GetShields() < self:GetShieldThreshold() then
                 local toSend = {}
                 local available = (IsValid(room) and room:GetAvailableTransporterTargets()) or nil
                 local dests = {}
@@ -187,8 +194,6 @@ if SERVER then
                     table.remove(toSend, index)
 
                     if IsValid(room) and dests[pad] and self:TeleportEntity(ent, pads[pad], dests[pad]) then
-                        sent[pad] = true
-                    elseif self:TeleportEntity(ent, pads[pad], nil) then
                         sent[pad] = true
                     end
                 end

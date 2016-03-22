@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "container"
+local BASE = "gui_container"
 
 GUI.BaseName = BASE
 
@@ -45,17 +45,17 @@ end
 function GUI:Initialize()
     self.Super[BASE].Initialize(self)
 
-    self._icon = sgui.Create(self, "image")
+    self._icon = sgui.Create(self, "gui_image")
 
-    self._nameLabel = sgui.Create(self, "label")
+    self._nameLabel = sgui.Create(self, "gui_label")
     self._nameLabel.AlignX = TEXT_ALIGN_CENTER
     self._nameLabel.AlignY = TEXT_ALIGN_CENTER
 
-    self._tierLabel = sgui.Create(self, "label")
+    self._tierLabel = sgui.Create(self, "gui_label")
     self._tierLabel.AlignX = TEXT_ALIGN_CENTER
     self._tierLabel.AlignY = TEXT_ALIGN_CENTER
 
-    self._powerBar = sgui.Create(self, "weaponpowerbar")
+    self._powerBar = sgui.Create(self, "weapon_powerbar")
 end
 
 function GUI:SetBounds(bounds)

@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "page_page"
 
 GUI.BaseName = BASE
 
@@ -27,17 +27,17 @@ GUI._weapons = nil
 function GUI:Enter()
     local gridSize = self:GetHeight() - 16
     local colWidth = self:GetWidth() - gridSize - 24
-    self._grid = sgui.Create(self, "sectorgrid")
+    self._grid = sgui.Create(self, "gui_sectorgrid")
     self._grid:SetOrigin(8, 8)
     self._grid:SetSize(gridSize, gridSize)
     self._grid:SetCentreObject(nil)
     self._grid:SetScale(math.max(self._grid:GetMinScale(), self._grid:GetMinSensorScale()))
 
-    self._powerBar = sgui.Create(self, "powerbar")
+    self._powerBar = sgui.Create(self, "gui_powerbar")
     self._powerBar:SetOrigin(self._grid:GetRight() + 8, 8)
     self._powerBar:SetSize(colWidth, 48)
 
-    self._targetLbl = sgui.Create(self, "label")
+    self._targetLbl = sgui.Create(self, "gui_label")
     self._targetLbl:SetOrigin(self._grid:GetRight() + 8, self._powerBar:GetBottom() + 8)
     self._targetLbl:SetSize(colWidth, 48)
     self._targetLbl.AlignX = TEXT_ALIGN_CENTER
@@ -48,7 +48,7 @@ function GUI:Enter()
 
     self._weapons = {}
     for i = 1, 3 do
-        local wpn = sgui.Create(self, "weaponview")
+        local wpn = sgui.Create(self, "weapon_view")
         local yof = 4 - i
         local slot = moduletype.WEAPON_1 + i - 1
 

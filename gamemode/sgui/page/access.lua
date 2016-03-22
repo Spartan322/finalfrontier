@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "page_page"
 
 GUI.BaseName = BASE
 
@@ -25,13 +25,13 @@ GUI._doorViews = nil
 function GUI:Enter()
     self.Super[BASE].Enter(self)
 
-    self._roomView = sgui.Create(self:GetScreen(), "roomview")
+    self._roomView = sgui.Create(self:GetScreen(), "gui_roomview")
     self._roomView:SetCurrentRoom(self:GetRoom())
 
     self._doorViews = {}
     if self:GetRoom() then
         for _, door in ipairs(self:GetRoom():GetDoors()) do
-            local doorview = sgui.Create(self, "doorview")
+            local doorview = sgui.Create(self, "gui_doorview")
             doorview:SetCurrentDoor(door)
             doorview.Enabled = true
             doorview.NeedsPermission = true

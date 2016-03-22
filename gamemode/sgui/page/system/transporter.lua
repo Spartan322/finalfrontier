@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "page_page"
 
 GUI.BaseName = BASE
 
@@ -52,7 +52,7 @@ function GUI:Inspect(obj)
         self._sectorLabel = nil
         self._grid = nil
 
-        self._shipView = sgui.Create(self, "shipview")
+        self._shipView = sgui.Create(self, "gui_shipview")
         self._shipView:SetCurrentShip(ships.GetByName(obj:GetObjectName()))
         self._shipView:SetBounds(Bounds(16, 8, self:GetWidth() - 32, self:GetHeight() - 88))
         self._shipView:SetCanClickRooms(true)
@@ -74,7 +74,7 @@ function GUI:Inspect(obj)
             end
         end
 
-        self._closeButton = sgui.Create(self, "button")
+        self._closeButton = sgui.Create(self, "gui_button")
         self._closeButton:SetOrigin(16, self:GetHeight() - 48 - 16)
         self._closeButton:SetSize(self:GetWidth() - 56 - colWidth * 2, 48)
         self._closeButton.Text = "Back"
@@ -92,7 +92,7 @@ function GUI:Inspect(obj)
         self._shipView = nil
         self._closeButton = nil
 
-        self._grid = sgui.Create(self, "sectorgrid")
+        self._grid = sgui.Create(self, "gui_sectorgrid")
         self._grid:SetOrigin(8, 8)
         self._grid:SetSize(self:GetWidth() * 0.6 - 16, self:GetHeight() - 16)
         self._grid:SetCentreObject(nil)
@@ -111,14 +111,14 @@ function GUI:Inspect(obj)
             end
         end
 
-        self._zoomLabel = sgui.Create(self, "label")
+        self._zoomLabel = sgui.Create(self, "gui_label")
         self._zoomLabel.AlignX = TEXT_ALIGN_CENTER
         self._zoomLabel.AlignY = TEXT_ALIGN_CENTER
         self._zoomLabel:SetOrigin(self._grid:GetRight() + 16, 16)
         self._zoomLabel:SetSize(colWidth, 32)
         self._zoomLabel.Text = "View Zoom"
 
-        self._zoomSlider = sgui.Create(self, "slider")
+        self._zoomSlider = sgui.Create(self, "gui_slider")
         self._zoomSlider:SetOrigin(self._grid:GetRight() + 16, self._zoomLabel:GetBottom() + 8)
         self._zoomSlider:SetSize(colWidth, 48)
 
@@ -130,14 +130,14 @@ function GUI:Inspect(obj)
             end
         end
 
-        self._selectedLabel = sgui.Create(self, "label")
+        self._selectedLabel = sgui.Create(self, "gui_label")
         self._selectedLabel.AlignX = TEXT_ALIGN_CENTER
         self._selectedLabel.AlignY = TEXT_ALIGN_CENTER
         self._selectedLabel:SetOrigin(self._grid:GetRight() + 16, self._zoomSlider:GetBottom() + 16)
         self._selectedLabel:SetSize(colWidth, 32)
         self._selectedLabel.Text = "This Ship"
 
-        self._inspectButton = sgui.Create(self, "button")
+        self._inspectButton = sgui.Create(self, "gui_button")
         self._inspectButton:SetOrigin(self._grid:GetRight() + 16, self._selectedLabel:GetBottom() + 8)
         self._inspectButton:SetSize(colWidth, 48)
         self._inspectButton.Text = "Select Room"
@@ -157,7 +157,7 @@ function GUI:Inspect(obj)
             end
         end
 
-        self._jettisonButton = sgui.Create(self, "button")
+        self._jettisonButton = sgui.Create(self, "gui_button")
         self._jettisonButton:SetOrigin(self._grid:GetRight() + 16, self._inspectButton:GetBottom() + 8)
         self._jettisonButton:SetSize(colWidth, 48)
         self._jettisonButton.Text = "Jettison"
@@ -170,7 +170,7 @@ function GUI:Inspect(obj)
         end
     end
 
-    self._chargeSlider = sgui.Create(self, "slider")
+    self._chargeSlider = sgui.Create(self, "gui_slider")
     self._chargeSlider:SetSize(colWidth, 48)
     self._chargeSlider.CanClick = false
     self._chargeSlider.TextColorNeg = self._chargeSlider.TextColorPos
@@ -182,7 +182,7 @@ function GUI:Inspect(obj)
         end
     end
 
-    self._powerBar = sgui.Create(self, "powerbar")
+    self._powerBar = sgui.Create(self, "gui_powerbar")
     self._powerBar:SetSize(colWidth, 48)
 
     if obj then

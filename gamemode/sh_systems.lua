@@ -39,7 +39,7 @@ _mt.Powered = false
 _mt._room = nil
 _mt._ship = nil
 
-_mt.SGUIName = "page"
+_mt.SGUIName = "page_page"
 
 function FindIncrement(current, target, increment)
     if target < current then

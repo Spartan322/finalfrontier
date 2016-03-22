@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "page_page"
 
 GUI.BaseName = BASE
 
@@ -25,7 +25,7 @@ GUI._powerbar = nil
 function GUI:Enter()
     self.Super[BASE].Enter(self)
 
-    self._shipview = sgui.Create(self, "shipview")
+    self._shipview = sgui.Create(self, "gui_shipview")
     self._shipview:SetCurrentShip(self:GetShip())
 
     for _, door in pairs(self._shipview:GetDoorElements()) do
@@ -56,7 +56,7 @@ function GUI:Enter()
     local margin = 16
     local barheight = 48
 
-    self._powerbar = sgui.Create(self, "powerbar")
+    self._powerbar = sgui.Create(self, "gui_powerbar")
     self._powerbar:SetSize(self:GetWidth() - margin * 2, barheight)
     self._powerbar:SetOrigin(margin, self:GetHeight() - margin - barheight)
 

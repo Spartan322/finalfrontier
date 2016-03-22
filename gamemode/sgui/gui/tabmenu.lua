@@ -16,7 +16,7 @@
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
 local BLACK = Color(0, 0, 0, 255)
-local BASE = "container"
+local BASE = "gui_container"
 
 GUI.BaseName = BASE
 
@@ -32,7 +32,7 @@ function GUI:Initialize()
 end
 
 function GUI:AddTab(text)
-    local tab = sgui.Create(self, "tab")
+    local tab = sgui.Create(self, "gui_tab")
     tab.Text = text
 
     table.insert(self._tabs, tab)

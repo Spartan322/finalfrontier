@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "container"
+local BASE = "gui_container"
 
 GUI.BaseName = BASE
 
@@ -27,8 +27,8 @@ GUI._adrmButton = nil
 function GUI:Initialize()
     self.Super[BASE].Initialize(self)
 
-    self._permButton = sgui.Create(self, "button")
-    self._adrmButton = sgui.Create(self, "button")
+    self._permButton = sgui.Create(self, "gui_button")
+    self._adrmButton = sgui.Create(self, "gui_button")
 
     if SERVER then
         self._permButton.OnClick = function(btn)

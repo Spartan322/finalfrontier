@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "page_page"
 
 local ICON_SIZE = 48
 local ICON_PADDING = 16
@@ -48,7 +48,7 @@ function GUI:SetCurrentRoom(room)
             self._powerbar = nil
         end
         self._roomelems = {}
-        self._roomelems.slider = sgui.Create(self, "slider")
+        self._roomelems.slider = sgui.Create(self, "gui_slider")
         self._roomelems.slider:SetOrigin(ICON_PADDING, self:GetHeight() - ICON_SIZE - ICON_PADDING)
         self._roomelems.slider:SetSize(self:GetWidth() / 2 - ICON_PADDING, ICON_SIZE)
         self._roomelems.slider.Color = Color(45, 51, 172, 191)
@@ -59,7 +59,7 @@ function GUI:SetCurrentRoom(room)
                 self:GetScreen():UpdateLayout()
             end
         end
-        self._roomelems.supplied = sgui.Create(self, "label")
+        self._roomelems.supplied = sgui.Create(self, "gui_label")
         self._roomelems.supplied:SetOrigin(self._roomelems.slider:GetRight() + ICON_PADDING, self._roomelems.slider:GetTop())
         self._roomelems.supplied:SetSize(self:GetWidth() - self._roomelems.supplied:GetLeft() - ICON_PADDING * 2 - ICON_SIZE, ICON_SIZE)
 
@@ -69,7 +69,7 @@ function GUI:SetCurrentRoom(room)
             self._roomelems.supplied.Text = ""
         end
 
-        self._roomelems.close = sgui.Create(self, "button")
+        self._roomelems.close = sgui.Create(self, "gui_button")
         self._roomelems.close:SetOrigin(self:GetWidth() - ICON_PADDING - ICON_SIZE, self._roomelems.slider:GetTop())
         self._roomelems.close:SetSize(ICON_SIZE, ICON_SIZE)
         self._roomelems.close.Text = "X"
@@ -82,7 +82,7 @@ function GUI:SetCurrentRoom(room)
         end
     else
         if not self._powerbar then
-            self._powerbar = sgui.Create(self, "powerbar")
+            self._powerbar = sgui.Create(self, "gui_powerbar")
             self._powerbar:SetOrigin(ICON_PADDING, self:GetHeight() - ICON_SIZE - ICON_PADDING)
             self._powerbar:SetSize(self:GetWidth() - ICON_PADDING * 2, ICON_SIZE)
         end
@@ -96,7 +96,7 @@ end
 function GUI:Enter()
     self.Super[BASE].Enter(self)
 
-    self._shipview = sgui.Create(self, "shipview")
+    self._shipview = sgui.Create(self, "gui_shipview")
     self._shipview:SetCurrentShip(self:GetShip())
 
     self._shipview:SetBounds(Bounds(
@@ -108,7 +108,7 @@ function GUI:Enter()
 
     for _, room in pairs(self._shipview:GetRoomElements()) do
         room.CanClick = true
-        room.shieldDial = sgui.Create(self, "dualdial")
+        room.shieldDial = sgui.Create(self, "gui_dualdial")
 
         if SERVER then
             function room.OnClick(room)

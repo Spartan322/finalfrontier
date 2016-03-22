@@ -107,27 +107,53 @@ if CLIENT then
     function _mt:Draw() return end
 end
 
+local function FindFiles(path)
+    local files, directories = file.Find(path.."*", "LUA")
+    
+    for i, f in ipairs(files) do
+        files[i] = path .. f
+    end
+    
+    for i, d in ipairs(directories) do
+        table.Add(files, FindFiles(path..d.."/"))
+    end
+    
+    return files
+end
+
 MsgN("Loading sgui...")
-local files = file.Find("finalfrontier/gamemode/sgui/*.lua", "LUA")
+local files = FindFiles("finalfrontier/gamemode/sgui/")
+
+MsgN(table.ToString(files, "Files", true))
+
 for i, file in ipairs(files) do
-    local name = string.sub(file, 0, string.len(file) - 4)
-    if SERVER then AddCSLuaFile("sgui/" .. file) end
+        while not string.EndsWith(file, ".lua") do
+            i = i + 1
+            file = files[i]
+        end
+        MsgN(file)
+        local sI, eI = string.find(file, "finalfrontier/gamemode/sgui/")
+        file = string.sub(file, eI+1)
+        local name = string.StripExtension(file)
+        name = string.Replace(name, "/", "_")
+        if SERVER then AddCSLuaFile("sgui/" .. file) end
 
-    MsgN("- " .. name)
+        MsgN("- " .. name)
 
-    GUI = { Name = name }
-    GUI.__index = GUI
-    GUI.Super = {}
-    GUI.Super.__index = GUI.Super
-    GUI.Super[name] = GUI
-    include("sgui/" .. file)
+        GUI = { Name = name }
+        GUI.__index = GUI
+        GUI.Super = {}
+        GUI.Super.__index = GUI.Super
+        GUI.Super[name] = GUI
+        include("sgui/" .. file)
 
-    sgui._dict[name] = GUI
-    GUI = nil
+        sgui._dict[name] = GUI
+        GUI = nil
 end
 
 for _, GUI in pairs(sgui._dict) do
     if GUI.BaseName then
+        MsgN("BaseName: "..GUI.BaseName)
         GUI.Base = sgui._dict[GUI.BaseName]
         setmetatable(GUI, GUI.Base)
         setmetatable(GUI.Super, GUI.Base.Super)
@@ -137,6 +163,8 @@ for _, GUI in pairs(sgui._dict) do
 end
 
 function sgui.Create(parent, name)
+    if not string.find(name, "_") then name = "page_system_"..name end
+    
     if sgui._dict[name] then
         local screen = parent
         if not parent.GetClass or parent:GetClass() ~= "info_ff_screen" then

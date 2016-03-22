@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "page_page"
 
 GUI.BaseName = BASE
 
@@ -55,11 +55,11 @@ function GUI:Inspect(obj)
         self._sectorLabel = nil
         self._grid = nil
 
-        self._shipView = sgui.Create(self, "shipview")
+        self._shipView = sgui.Create(self, "gui_shipview")
         self._shipView:SetCurrentShip(ships.GetByName(obj:GetObjectName()))
         self._shipView:SetBounds(Bounds(16, 8, self:GetWidth() - 32, self:GetHeight() - 88))
 
-        self._closeButton = sgui.Create(self, "button")
+        self._closeButton = sgui.Create(self, "gui_button")
         self._closeButton:SetOrigin(16, self:GetHeight() - 48 - 16)
         self._closeButton:SetSize(self:GetWidth() - 32, 48)
         self._closeButton.Text = "Return to Sector View"
@@ -77,7 +77,7 @@ function GUI:Inspect(obj)
         self._shipView = nil
         self._closeButton = nil
 
-        self._grid = sgui.Create(self, "sectorgrid")
+        self._grid = sgui.Create(self, "gui_sectorgrid")
         self._grid:SetOrigin(8, 8)
         self._grid:SetSize(self:GetWidth() * 0.6 - 16, self:GetHeight() - 56)
         self._grid:SetCentreObject(nil)
@@ -94,14 +94,14 @@ function GUI:Inspect(obj)
             end
         end
         
-        local lblMinus = sgui.Create(self, "label")
+        local lblMinus = sgui.Create(self, "gui_label")
         lblMinus.AlignX = TEXT_ALIGN_CENTER
         lblMinus.AlignY = TEXT_ALIGN_CENTER
         lblMinus:SetOrigin(self._grid:GetLeft(), self._grid:GetBottom() + 8)
         lblMinus:SetSize(32, 32)
         lblMinus.Text = "[-]"
 
-        local lblPlus = sgui.Create(self, "label")
+        local lblPlus = sgui.Create(self, "gui_label")
         lblPlus.AlignX = TEXT_ALIGN_CENTER
         lblPlus.AlignY = TEXT_ALIGN_CENTER
         lblPlus:SetOrigin(self._grid:GetRight() - 32, self._grid:GetBottom() + 8)
@@ -110,7 +110,7 @@ function GUI:Inspect(obj)
 
         self._zoomLabels = {minus = lblMinus, plus = lblPlus}
 
-        self._zoomSlider = sgui.Create(self, "slider")
+        self._zoomSlider = sgui.Create(self, "gui_slider")
         self._zoomSlider:SetOrigin(lblMinus:GetRight() + 8, self._grid:GetBottom() + 8)
         self._zoomSlider:SetSize(lblPlus:GetLeft() - lblMinus:GetRight() - 16, 32)
 
@@ -122,42 +122,42 @@ function GUI:Inspect(obj)
             end
         end
 
-        self._scanPowerLabel = sgui.Create(self, "label")
+        self._scanPowerLabel = sgui.Create(self, "gui_label")
         self._scanPowerLabel.AlignX = TEXT_ALIGN_CENTER
         self._scanPowerLabel.AlignY = TEXT_ALIGN_CENTER
         self._scanPowerLabel:SetOrigin(self._grid:GetRight() + 16, 8)
         self._scanPowerLabel:SetSize(self:GetWidth() * 0.4 - 16, 32)
         self._scanPowerLabel.Text = "Scan Power"
 
-        self._chargeSlider = sgui.Create(self, "slider")
+        self._chargeSlider = sgui.Create(self, "gui_slider")
         self._chargeSlider:SetOrigin(self._grid:GetRight() + 16, self._scanPowerLabel:GetBottom() + 8)
         self._chargeSlider:SetSize(self:GetWidth() * 0.4 - 16, 32)
         self._chargeSlider.CanClick = false
         self._chargeSlider.TextColorNeg = self._chargeSlider.TextColorPos
         self._chargeSlider.Value = self:GetSystem():GetCurrentCharge() / self:GetSystem():GetMaximumCharge()
 
-        self._scanPowerBar = sgui.Create(self, "powerbar")
+        self._scanPowerBar = sgui.Create(self, "gui_powerbar")
         self._scanPowerBar:SetOrigin(self._grid:GetRight() + 16, self._chargeSlider:GetBottom() + 8)
         self._scanPowerBar:SetSize(self:GetWidth() * 0.4 - 16, 32)
 
-        self._scanButton = sgui.Create(self, "button")
+        self._scanButton = sgui.Create(self, "gui_button")
         self._scanButton:SetOrigin(self._grid:GetRight() + 16, self._scanPowerBar:GetBottom() + 8)
         self._scanButton:SetSize(self:GetWidth() * 0.2 - 12, 48)
         self._scanButton.Text = "Scan"
 
-        self._autoButton = sgui.Create(self, "button")
+        self._autoButton = sgui.Create(self, "gui_button")
         self._autoButton:SetOrigin(self._scanButton:GetRight() + 8, self._scanButton:GetTop())
         self._autoButton:SetSize(self._scanButton:GetSize())
         self._autoButton.Text = "Auto"
 
-        self._selectedLabel = sgui.Create(self, "label")
+        self._selectedLabel = sgui.Create(self, "gui_label")
         self._selectedLabel.AlignX = TEXT_ALIGN_CENTER
         self._selectedLabel.AlignY = TEXT_ALIGN_CENTER
         self._selectedLabel:SetOrigin(self._grid:GetRight() + 16, self._scanButton:GetBottom() + 16)
         self._selectedLabel:SetSize(self:GetWidth() * 0.4 - 16, 32)
         self._selectedLabel.Text = "This Ship"
 
-        self._inspectButton = sgui.Create(self, "button")
+        self._inspectButton = sgui.Create(self, "gui_button")
         self._inspectButton:SetOrigin(self._grid:GetRight() + 16, self._selectedLabel:GetBottom() + 8)
         self._inspectButton:SetSize(self:GetWidth() * 0.4 - 16, 48)
         self._inspectButton.Text = "Inspect"
@@ -183,13 +183,13 @@ function GUI:Inspect(obj)
             end
         end
 
-        self._coordLabel = sgui.Create(self, "label")
+        self._coordLabel = sgui.Create(self, "gui_label")
         self._coordLabel.AlignX = TEXT_ALIGN_CENTER
         self._coordLabel.AlignY = TEXT_ALIGN_CENTER
         self._coordLabel:SetOrigin(self._grid:GetRight() + 16, self:GetHeight() - 48)
         self._coordLabel:SetSize(self:GetWidth() * 0.4 - 16, 32)
 
-        self._sectorLabel = sgui.Create(self, "label")
+        self._sectorLabel = sgui.Create(self, "gui_label")
         self._sectorLabel.AlignX = TEXT_ALIGN_CENTER
         self._sectorLabel.AlignY = TEXT_ALIGN_CENTER
         self._sectorLabel:SetOrigin(self._grid:GetRight() + 16, self._coordLabel:GetTop() - 48)

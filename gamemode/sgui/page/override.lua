@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "page_page"
 
 local NODE_SIZE = 48
 
@@ -57,16 +57,16 @@ function GUI:Enter()
 
     local w, h = self:GetSize()
 
-    self._shuffleButton = sgui.Create(self, "button")
+    self._shuffleButton = sgui.Create(self, "gui_button")
     self._shuffleButton:SetSize((w - 48) / 4, 48)
     self._shuffleButton:SetOrigin(16, h - 48 - 16)
     self._shuffleButton.Text = "Shuffle"
 
-    self._overrideButton = sgui.Create(self, "button")
+    self._overrideButton = sgui.Create(self, "gui_button")
     self._overrideButton:SetSize((w - 48) / 2, 48)
     self._overrideButton:SetOrigin(self._shuffleButton:GetRight() + 8, h - 48 - 16)
 
-    self._alarmTimer = sgui.Create(self, "label")
+    self._alarmTimer = sgui.Create(self, "gui_label")
     self._alarmTimer:SetSize((w - 48) / 4, 48)
     self._alarmTimer:SetOrigin(self._overrideButton:GetRight() + 8, h - 48 - 16)
     self._alarmTimer.AlignX = TEXT_ALIGN_CENTER
@@ -98,13 +98,13 @@ function GUI:Enter()
 
     h = h - 80
 
-    self._start = sgui.Create(self, "overridenode")
+    self._start = sgui.Create(self, "security_overridenode")
     self._start:SetSize(NODE_SIZE, NODE_SIZE)
     self._start:SetCentre(48, h / 2)
     self._start.Enabled = false
     self._start.CanClick = false
 
-    self._end = sgui.Create(self, "overridenode")
+    self._end = sgui.Create(self, "security_overridenode")
     self._end:SetSize(NODE_SIZE, NODE_SIZE)
     self._end:SetCentre(w - 48, h / 2)
     self._end.Enabled = false
@@ -125,7 +125,7 @@ function GUI:Enter()
         local count = self:GetScreen().OverrideNodeCount
         local rows = math.ceil(count / 4)
         for i = 1, count do
-            local node = sgui.Create(self, "overridenode")
+            local node = sgui.Create(self, "security_overridenode")
             node:SetSize(NODE_SIZE, NODE_SIZE)
             local pos = self:GetScreen().OverrideNodePositions[i]
             node:SetCentre(pos.x, pos.y)
@@ -323,7 +323,7 @@ if CLIENT then
         if layout.nodes then
             for i, n in ipairs(layout.nodes) do
                 if not self._nodes[i] then
-                    local node = sgui.Create(self, "overridenode")
+                    local node = sgui.Create(self, "security_overridenode")
                     node:SetSize(NODE_SIZE, NODE_SIZE)
                     node:SetCentre(n.x, n.y)
                     node.Label = n.label

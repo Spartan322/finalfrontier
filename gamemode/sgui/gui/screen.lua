@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "container"
+local BASE = "gui_container"
 
 page = {}
 page.STATUS   = 1
@@ -45,15 +45,15 @@ function GUI:Initialize()
     self:SetCentre(0, 0)
 
     self.Pages = {}
-    self.Pages[page.STATUS] = sgui.Create(self:GetScreen(), "statuspage")
-    self.Pages[page.ACCESS] = sgui.Create(self:GetScreen(), "accesspage")
+    self.Pages[page.STATUS] = sgui.Create(self:GetScreen(), "page_status")
+    self.Pages[page.ACCESS] = sgui.Create(self:GetScreen(), "page_access")
     if self:GetSystem() and self:GetSystem().SGUIName ~= "page" then
         self.Pages[page.SYSTEM] = sgui.Create(self:GetScreen(), self:GetSystem().SGUIName)
     end
-    self.Pages[page.SECURITY] = sgui.Create(self:GetScreen(), "securitypage")
-    self.Pages[page.OVERRIDE] = sgui.Create(self:GetScreen(), "overridepage")
+    self.Pages[page.SECURITY] = sgui.Create(self:GetScreen(), "page_security")
+    self.Pages[page.OVERRIDE] = sgui.Create(self:GetScreen(), "page_override")
 
-    self.TabMenu = sgui.Create(self:GetScreen(), "tabmenu")
+    self.TabMenu = sgui.Create(self:GetScreen(), "gui_tabmenu")
     self.TabMenu:SetSize(self:GetWidth() - self.TabMargin * 2, self.TabHeight)
     self.TabMenu:SetCentre(self:GetWidth() / 2, self.TabHeight / 2 + self.TabMargin)
 

@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "page_page"
 
 GUI.BaseName = BASE
 
@@ -39,7 +39,7 @@ function GUI:UpdateButtons()
         self._buttons = {}
         for i, ply in ipairs(self._playerList) do
             if i > 12 then break end
-            local btn = sgui.Create(self, "securitybutton")
+            local btn = sgui.Create(self, "security_button")
             btn:SetPlayer(ply)
             btn:SetSize((self:GetWidth() - 16) / 2 - 4, 48)
             btn:SetCentre(self:GetWidth() / 4
@@ -54,7 +54,7 @@ function GUI:Enter()
     self.Super[BASE].Enter(self)
 
     local function keyLabel(index, text, clr)
-        local lbl = sgui.Create(self, "label")
+        local lbl = sgui.Create(self, "gui_label")
         lbl.Text = text
         lbl:SetSize((self:GetWidth() - 32) / 5 + 16, 64)
         lbl:SetCentre((self:GetWidth() - 32) * (2 * index + 1) / 10 + 16, self:GetHeight() - 32)

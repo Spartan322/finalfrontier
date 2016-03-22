@@ -15,7 +15,7 @@
 -- You should have received a copy of the GNU Lesser General Public License
 -- along with Final Frontier. If not, see <http://www.gnu.org/licenses/>.
 
-local BASE = "page"
+local BASE = "page_page"
 
 GUI.BaseName = BASE
 
@@ -30,7 +30,7 @@ GUI._powerBar = nil
 function GUI:CreateModuleView(slot)
     local size = math.min(self:GetHeight() - 144, self:GetWidth() / 2 - 128)
 
-    local view = sgui.Create(self, "moduleview")
+    local view = sgui.Create(self, "gui_moduleview")
     view:SetTop(8)
     if slot == moduletype.REPAIR_1 then
         view:SetLeft(16)
@@ -48,17 +48,17 @@ function GUI:Enter()
     self._grids[1] = self:CreateModuleView(moduletype.REPAIR_1)
     self._grids[2] = self:CreateModuleView(moduletype.REPAIR_2)
 
-    self._compareBtn = sgui.Create(self, "button")
+    self._compareBtn = sgui.Create(self, "gui_button")
     self._compareBtn:SetSize(self._grids[2]:GetLeft() - self._grids[1]:GetRight() - 32, 48)
     self._compareBtn:SetCentre(self:GetWidth() / 2, 8 + self._grids[1]:GetHeight() / 6)
     self._compareBtn.Text = "Compare"
 
-    self._spliceBtn = sgui.Create(self, "button")
+    self._spliceBtn = sgui.Create(self, "gui_button")
     self._spliceBtn:SetSize(self._grids[2]:GetLeft() - self._grids[1]:GetRight() - 32, 48)
     self._spliceBtn:SetCentre(self:GetWidth() / 2, 8 + self._grids[1]:GetHeight() * 3 / 6)
     self._spliceBtn.Text = "Splice"
 
-    self._mirrorBtn = sgui.Create(self, "button")
+    self._mirrorBtn = sgui.Create(self, "gui_button")
     self._mirrorBtn:SetSize(self._grids[2]:GetLeft() - self._grids[1]:GetRight() - 32, 48)
     self._mirrorBtn:SetCentre(self:GetWidth() / 2, 8 + self._grids[1]:GetHeight() * 5 / 6)
     self._mirrorBtn.Text = "Transcribe"
@@ -77,7 +77,7 @@ function GUI:Enter()
         end
     end
 
-    self._progressBar = sgui.Create(self, "slider")
+    self._progressBar = sgui.Create(self, "gui_slider")
     self._progressBar:SetOrigin(16, self._grids[1]:GetBottom() + 16)
     self._progressBar:SetSize(self:GetWidth() - 32, 48)
     self._progressBar.CanClick = false
@@ -131,7 +131,7 @@ function GUI:Enter()
         end
     end
 
-    self._powerBar = sgui.Create(self, "powerbar")
+    self._powerBar = sgui.Create(self, "gui_powerbar")
     self._powerBar:SetOrigin(16, self._progressBar:GetBottom() + 8)
     self._powerBar:SetSize(self:GetWidth() - 32, 48)
 end

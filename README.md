@@ -10,7 +10,7 @@ This specific repo is maintained by Spartan322
 1. Download and install [git](http://git-scm.com/).
 1. Run the following commands
 2.     cd <path to your gamemodes folder>
-        git clone https://github.com/finalfrontier/finalfrontier.git --recursive
+3.     git clone https://github.com/finalfrontier/finalfrontier.git --recursive
 
 1. Prepare for a whole lot of bugs
 
